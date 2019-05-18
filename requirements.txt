@@ -1,0 +1,8 @@
+flask
+feedparser
+requests
+numpy
+scipy
+docopt
+joblib
+psutil

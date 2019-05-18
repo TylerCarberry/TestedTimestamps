@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tested Timestamps</title>
+</head>
+<body>
+
+
+<img src="/static/podcast_logo.jpg" width="128">
+<br>
+Generate timestamps for This Is Only A Test<br>
+<a href="/static/README.txt">README</a>
+
+<h4>It takes about 3 minutes to generate the timestamps. I'm working on speeding this up. In the meantime, don't double
+    click the generate button. It'll load eventually</h4>
+
+<h2>From Url</h2>
+
+
+<form action="/fromurl" method="post">
+    Generate timestamps from podcast url. Upload a mp3 to a publicly accessible url (dropbox, google drive) and enter
+    the url here.<br>
+    Url: <input type="url" name="url"/> <br>
+    <input type="hidden" name="name" value="This Is Only A Test"/>
+    <input type="submit" value="Generate"/>
+</form>
+
+<br>
+
+
+<h2>Recently published episodes</h2>
+<p>Tip: If you control-click the generate button you can process multiple episodes at the same time</p>
+
+{% for your_list_element in your_list %}
+
+    <form action="/fromurl" method="post">
+        {{ your_list_element['name'] }}
+        <input id="url" type="hidden" name="url" value="{{ your_list_element['url'] }}"/>
+        <input id="name" type="hidden" name="name" value="{{ your_list_element['name'] }}"/>
+        <input type="submit" value="Generate"/>
+    </form>
+
+{% endfor %}
+
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("form").submit(function () {
+            $(this).submit(function () {
+                return false;
+            });
+            return true;
+        });
+    });
+</script>
+
+</html>
