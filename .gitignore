@@ -194,3 +194,5 @@ dmypy.json
 .DS_STORE
 
 episode\.mp3
+
+result\.txt
