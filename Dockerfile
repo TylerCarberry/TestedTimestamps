@@ -1,6 +1,7 @@
 FROM valian/docker-python-opencv-ffmpeg:py3
 
 ENV APP_HOME /app
+ENV PYTHONIOENCODING UTF-8
 WORKDIR $APP_HOME
 COPY . .
 

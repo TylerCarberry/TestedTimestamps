@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 import main
 import os
+import youtube_api
 
 app = Flask(__name__)
 
@@ -19,6 +20,11 @@ def home():
         your_list.append({"name": feed.entries[i].title, "url": feed.entries[i].enclosures[0].href})
 
     return render_template("index.html", your_list=your_list)
+
+
+@app.route('/run')
+def run_youtube():
+    return youtube_api.youtube_main(force=request.args.get("force"))
 
 
 @app.route('/fromurl', methods=['GET', 'POST'])
@@ -47,7 +53,7 @@ def generate_cached_data():
         your_list.append({"name": feed.entries[i].title, "url": feed.entries[i].enclosures[0].href})
 
     cache = {}
-    for i in range(0, 2):
+    for i in range(0, 20):
         if os.path.exists("episode.mp3"):
             os.remove("episode.mp3")
 
@@ -63,5 +69,3 @@ def generate_cached_data():
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
-
-# generate_cached_data()
