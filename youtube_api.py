@@ -12,10 +12,10 @@ TESTED_YOUTUBE_ID = "UCiDJtJKMICpb9B1qf7qjEOA"
 def get_access_token():
     url = "https://www.googleapis.com/oauth2/v4/token"
 
-    querystring = {"client_secret": os.environ("TESTED_YOUTUBE_CLIENT_SECRET"),
+    querystring = {"client_secret": os.environ["TESTED_YOUTUBE_CLIENT_SECRET"],
                    "grant_type": "refresh_token",
-                   "refresh_token": os.environ("TESTED_YOUTUBE_REFRESH_TOKEN"),
-                   "client_id": os.environ("TESTED_YOUTUBE_CLIENT_ID")}
+                   "refresh_token": os.environ["TESTED_YOUTUBE_REFRESH_TOKEN"],
+                   "client_id": os.environ["TESTED_YOUTUBE_CLIENT_ID"]}
 
     response = requests.request("POST", url, params=querystring)
     return json.loads(response.text)["access_token"]
