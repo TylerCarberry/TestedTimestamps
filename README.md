@@ -1,6 +1,6 @@
 # Tested Timestamp Bot
 
-Generates timestamps for the Tested Podcast [This is Only a Test](https://www.tested.com/podcast/this-is-only-a-test/) by listening for the transistion music.
+Generates timestamps for the Tested Podcast [This is Only a Test](https://www.tested.com/podcast/this-is-only-a-test/) by listening for the transition music.
 
 [Example](https://www.youtube.com/watch?v=Szk0Lqe3qlM&lc=UgwEXngHAyQ6Nwr9eFh4AaABAg)
 

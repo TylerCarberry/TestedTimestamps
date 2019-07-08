@@ -6,20 +6,18 @@ import re
 import os
 
 RSS_FEED = "http://www.tested.com/podcast-xml/this-is-only-a-test/"
+TESTED_YOUTUBE_ID = "UCiDJtJKMICpb9B1qf7qjEOA"
+
 
 def get_access_token():
     url = "https://www.googleapis.com/oauth2/v4/token"
 
-    querystring = {"client_secret": os.environ("TESTED_YOUTUBE_CLIENT_SECRET"), "grant_type": "refresh_token",
+    querystring = {"client_secret": os.environ("TESTED_YOUTUBE_CLIENT_SECRET"),
+                   "grant_type": "refresh_token",
                    "refresh_token": os.environ("TESTED_YOUTUBE_REFRESH_TOKEN"),
                    "client_id": os.environ("TESTED_YOUTUBE_CLIENT_ID")}
 
-    payload = ""
-    headers = {
-    }
-
-    response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
-    print(response.text)
+    response = requests.request("POST", url, params=querystring)
     return json.loads(response.text)["access_token"]
 
 
@@ -27,10 +25,9 @@ def get_newest_podcast_video_id_and_name():
     url = "https://www.googleapis.com/youtube/v3/search"
 
     querystring = {
-        "part":"snippet",
-        "channelId":"UCiDJtJKMICpb9B1qf7qjEOA",
-        "maxResults":"25",
-        #"q": "This is Only a Test",
+        "part": "snippet",
+        "channelId": TESTED_YOUTUBE_ID,
+        "maxResults": "25",
         "order": "date"
     }
 
@@ -40,32 +37,31 @@ def get_newest_podcast_video_id_and_name():
         'Cache-Control': "no-cache",
         'Host': "www.googleapis.com",
         'accept-encoding': "gzip, deflate",
-        'Connection': "keep-alive",
-        'cache-control': "no-cache"
+        'Connection': "keep-alive"
     }
 
     response = requests.request("GET", url, headers=headers, params=querystring)
+    videos = json.loads(response.text)
 
-    data = json.loads(response.text)
-
-    print(data)
-
+    print(videos)
     print(response.status_code)
 
-    for video in data['items']:
-
+    for video in videos['items']:
         video_id = video['id']['videoId']
         video_title = video['snippet']['title']
 
         if "this is only a test" in video_title.lower():
-            print(video_id, video_title)
             return video_id, video_title
 
 
 def have_i_already_commented(video_id):
     url = "https://www.googleapis.com/youtube/v3/commentThreads"
 
-    querystring = {"part": "snippet,replies", "videoId": video_id, "searchTerms": "Tested Timestamp Bot"}
+    querystring = {
+        "part": "snippet,replies",
+        "videoId": video_id,
+        "searchTerms": "Tested Timestamp Bot"
+    }
 
     headers = {
         'Authorization': "Bearer " + get_access_token(),
@@ -74,16 +70,13 @@ def have_i_already_commented(video_id):
         'Host': "www.googleapis.com",
         'accept-encoding': "gzip, deflate",
         'Connection': "keep-alive",
-        'cache-control': "no-cache"
     }
 
     response = requests.request("GET", url, headers=headers, params=querystring)
-
     print(response.text)
+    my_comments = json.loads(response.text)
 
-    data = json.loads(response.text)
-
-    return len(data['items']) > 0
+    return len(my_comments['items']) > 0
 
 
 def comment_on_video(video_id, message):
@@ -110,23 +103,26 @@ def comment_on_video(video_id, message):
         'Host': "www.googleapis.com",
         'accept-encoding': "gzip, deflate",
         'Connection': "keep-alive",
-        'cache-control': "no-cache"
     }
 
     response = requests.request("POST", url, data=json.dumps(payload), headers=headers, params=querystring)
-
     print(response.text)
 
 
-# This will break on episode 1000. But I have many years to fix this until that happens
 def get_newest_rss_episode_number():
     feed = feedparser.parse(RSS_FEED)
     title = feed.entries[0].title
-    pattern = r"\D(\d{%d})\D" % 3   # magic from stackoverflow
-    return re.findall(pattern, title)[0]
+
+    # Find the largest digit in the title, assume that it's the episode number
+    pattern = r'\d\d\d+'
+    return sorted(list(map(int, re.findall(pattern, title))), reverse=True)[0]
+
 
 
 def youtube_main(force=False):
+    """
+    :param force: If true post on the episode regardless of the episode number matching or if already commented
+    """
     video_id, video_name = get_newest_podcast_video_id_and_name()
     print(video_id, video_name)
     already_commented = have_i_already_commented(video_id)

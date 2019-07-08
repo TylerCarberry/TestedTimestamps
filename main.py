@@ -16,7 +16,7 @@ RSS_FEED = "http://www.tested.com/podcast-xml/this-is-only-a-test/"
 
 PODCAST_FILE_NAME = "episode.mp3"
 NUM_CPU_CORES = 4
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 # To add a new segment, copy the transition music to the /transitions folder
 # Add the filename and title to the dict below
@@ -105,7 +105,6 @@ def generate_timestamps(url=None):
         download_newest_episode(url)
 
     print("\nGenerating data... This will take approximately 3 minutes")
-    #audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 30 --density 30  --min-count 5 --hashbits 30 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + PODCAST_FILE_NAME).split())
 
     #audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 10 --density 20  --min-count 5 --hashbits 30 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + PODCAST_FILE_NAME).split())
 
@@ -114,7 +113,6 @@ def generate_timestamps(url=None):
 
     part_num = 0
     for file in parts:
-        #audfprint.main(( "audfprint match --dbase " + training.DB_FILE + " --match-win 3 --density 20  --min-count 5 --hashbits 10 --shifts 4 --ncores " + str( NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + file).split())
         audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 3 --density 20  --min-count 5 --hashbits 10 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + file).split())
 
         with open("result.txt", "r") as file:
@@ -138,6 +136,8 @@ def generate_timestamps(url=None):
     print()
     output = sorted(keyframes.values(), key=lambda x: x[1])
     for item in output:
+        # Add a couple seconds to skip to the end of the music
+        item[1] += 5
         print(FILE_NAMES_TO_NAME[item[0]], format_seconds(item[1]))
 
     return output
