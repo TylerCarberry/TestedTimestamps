@@ -130,7 +130,7 @@ def youtube_main(force=False):
     if (not force) and already_commented:
         return "Already commented on video " + video_name
 
-    newest_rss = get_newest_rss_episode_number()
+    newest_rss = str(get_newest_rss_episode_number())
     if (not force) and newest_rss not in video_name:
         return "The newest podcast in the RSS feed does not correspond to the youtube channel. " + newest_rss + " " + video_name
 
