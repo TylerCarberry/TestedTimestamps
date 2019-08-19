@@ -31,4 +31,4 @@ jobs:
     - name: Submit build to Google Cloud
       run: gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
     - name: Deploy to Google Cloud Run  
-      run: gcloud beta run deploy testedtimestamp --image gcr.io/testedtimestamp/testedtimestamp --platform managed --allow-unauthenticated
+      run: gcloud beta run deploy testedtimestamp --image gcr.io/testedtimestamp/testedtimestamp --platform managed --allow-unauthenticated --region us-central1
