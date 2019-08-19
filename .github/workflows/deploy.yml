@@ -25,6 +25,6 @@ jobs:
         export GOOGLE_APPLICATION_CREDENTIALS="gcloud.json"
         echo ${{ secrets.GCLOUD_AUTH }} > $GOOGLE_APPLICATION_CREDENTIALS
         gcloud config set project testedtimestamp
-        gcloud auth activate-service-account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=testedtimestamp
+        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=testedtimestamp
     - name: Submit build to Google Cloud
       run:  gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
