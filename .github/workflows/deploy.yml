@@ -12,10 +12,6 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.6.9
-    - name: Authenticate gcloud
-      run: |
-        export GOOGLE_APPLICATION_CREDENTIALS="gcloud.json"
-        echo ${{ secrets.GCLOUD_AUTH }} > $GOOGLE_APPLICATION_CREDENTIALS
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -24,5 +20,10 @@ jobs:
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
         sudo apt-get update
         sudo apt-get install google-cloud-sdk
+    - name: Authenticate gcloud
+      run: |
+        export GOOGLE_APPLICATION_CREDENTIALS="gcloud.json"
+        echo ${{ secrets.GCLOUD_AUTH }} > $GOOGLE_APPLICATION_CREDENTIALS
+        gcloud config set project testedtimestamp
     - name: Submit build to Google Cloud
       run:  gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
