@@ -22,7 +22,7 @@ jobs:
         sudo apt-get install google-cloud-sdk
     - run: gcloud config set project testedtimestamp
     - run: gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
-    - run: echo ${{ secrets.GCLOUD_AUTH }} > gcloud.json
+    - run: echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > gcloud.json
     - run: gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
     - name: Submit build to Google Cloud
       run:  gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
