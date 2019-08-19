@@ -21,12 +21,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install google-cloud-sdk
     - run: gcloud config set project testedtimestamp
-    - name: Authenticate gcloud
-      run: |
-        export GOOGLE_APPLICATION_CREDENTIALS="gcloud.json"
-        echo ${{ secrets.GCLOUD_AUTH }} > $GOOGLE_APPLICATION_CREDENTIALS
-        gcloud config set project testedtimestamp
-        gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
-        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=testedtimestamp
+    - run: gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
+    - run: echo ${{ secrets.GCLOUD_AUTH }} > gcloud.json
+    - run: gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
     - name: Submit build to Google Cloud
       run:  gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
