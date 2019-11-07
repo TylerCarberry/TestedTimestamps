@@ -22,7 +22,7 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: ${{ pythonLocation }}
+        path: /opt/hostedtoolcache/Python/3.6.9/x64
         key: cache-key
 
 
