@@ -16,10 +16,10 @@ jobs:
         python-version: 3.6.9
 
     - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: /opt/hostedtoolcache
-          key: cache-key
+      uses: actions/cache@v1
+      with:
+        path: /opt/hostedtoolcache
+        key: cache-key
 
     - name: Install dependencies
       run: |
