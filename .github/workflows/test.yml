@@ -21,7 +21,7 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: ${{ python -m site --user-site }}
+        path: {{ python -m site --user-site }}
         key: cache-key
 
 
