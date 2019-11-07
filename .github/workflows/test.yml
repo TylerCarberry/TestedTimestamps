@@ -15,10 +15,6 @@ jobs:
       with:
         python-version: 3.6.9
 
-
-    - run: SITE_PACKAGES=`python -m site --user-site`
-    - run: echo $SITE_PACKAGES
-
     - name: Cache node modules
       uses: actions/cache@v1
       with:
