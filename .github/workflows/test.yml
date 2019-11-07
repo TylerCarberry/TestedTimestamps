@@ -16,12 +16,13 @@ jobs:
         python-version: 3.6.9
 
 
-    - run: python -m site --user-site
+    - run: SITE_PACKAGES=`python -m site --user-site`
+    - run: echo $SITE_PACKAGES
 
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: {{ python -m site --user-site }}
+        path: ${{ SITE_PACKAGES }}
         key: cache-key
 
 
