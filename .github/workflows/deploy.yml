@@ -18,10 +18,10 @@ jobs:
         python-version: 3.6.9
 
     - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: /opt/hostedtoolcache/Python/3.6.9/x64/lib/python3.6/site-packages
-          key: cache-key
+      uses: actions/cache@v1
+      with:
+        path: /opt/hostedtoolcache/Python/3.6.9/x64/lib/python3.6/site-packages
+        key: dependency-cache
 
     - name: Install dependencies
       run: |
