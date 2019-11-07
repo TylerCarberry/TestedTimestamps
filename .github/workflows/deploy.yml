@@ -14,6 +14,7 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.6.9
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -22,6 +23,9 @@ jobs:
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
         sudo apt-get update
         sudo apt-get install google-cloud-sdk
+
+    - run: pip show requests
+
     - name: Authenticate gcloud service account
       run: |
         gcloud config set project testedtimestamp
