@@ -15,6 +15,12 @@ jobs:
       with:
         python-version: 3.6.9
 
+    - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache
+          key: cache-key
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -24,4 +30,4 @@ jobs:
         sudo apt-get update
         sudo apt-get install google-cloud-sdk
 
-    - run: pip show requests
+    - run: pip show feedparser
