@@ -15,11 +15,15 @@ jobs:
       with:
         python-version: 3.6.9
 
+
+    - run: python -m site --user-site
+
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: /opt/hostedtoolcache
+        path: ${{ python -m site --user-site }}
         key: cache-key
+
 
     - name: Install dependencies
       run: |
