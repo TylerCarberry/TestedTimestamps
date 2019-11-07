@@ -22,7 +22,7 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: ${{ SITE_PACKAGES }}
+        path: /opt/hostedtoolcache/Python/*/lib/*/site-packages
         key: cache-key
 
 
