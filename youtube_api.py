@@ -60,7 +60,7 @@ def have_i_already_commented(video_id):
     querystring = {
         "part": "snippet,replies",
         "videoId": video_id,
-        "searchTerms": "Tested Timestamp Bot"
+        "searchTerms": "Timestamp Bot"
     }
 
     headers = {
