@@ -8,12 +8,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v1
+
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
         python-version: 3.6.9
+
+    - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/Python/3.6.9/x64/lib/python3.6/site-packages
+          key: cache-key
 
     - name: Install dependencies
       run: |
@@ -24,15 +32,15 @@ jobs:
         sudo apt-get update
         sudo apt-get install google-cloud-sdk
 
-    - run: pip show requests
-
     - name: Authenticate gcloud service account
       run: |
         gcloud config set project testedtimestamp
         gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
         echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > gcloud.json
         gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
+
     - name: Submit build to Google Cloud
       run: gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
+
     - name: Deploy to Google Cloud Run  
       run: gcloud beta run deploy testedtimestamp --image gcr.io/testedtimestamp/testedtimestamp --platform managed --allow-unauthenticated --region us-central1
