@@ -15,6 +15,7 @@ from utils import format_seconds
 RSS_FEED = "http://www.tested.com/podcast-xml/this-is-only-a-test/"
 
 PODCAST_FILE_NAME = "episode.mp3"
+RESULT_FILE = "result.txt"
 NUM_CPU_CORES = 4
 DEBUG_MODE = False
 
@@ -49,7 +50,7 @@ def remove_temp_data():
         shutil.rmtree("parts")
     except:
         pass
-    temp_files = ["result.txt"]
+    temp_files = [RESULT_FILE]
     for f in temp_files:
         if os.path.isfile(f):
             os.remove(f)
@@ -111,11 +112,22 @@ def generate_timestamps(url=None):
     keyframes = {}
     parts = split_episode_into_chunks()
 
+    print("DONE SPLITTING")
+
     part_num = 0
     for file in parts:
-        audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 3 --density 20  --min-count 5 --hashbits 10 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + file).split())
+        try:
+            audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 3 --density 20  --min-count 5 --hashbits 10 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + file).split())
+        except Exception as e:
+            # A lot of miscellaneous errors occur when running audfprint in multithreaded mode
+            # Rafter than debug the issue, just run it again single threaded and hope the issue goes away
+            print(e)
+            print("Error using multithreaded, falling back to single threaded")
+            if os.path.isfile(RESULT_FILE):
+                os.remove(RESULT_FILE)
+            audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 3 --density 20  --min-count 5 --hashbits 10 --shifts 4 --ncores " + str(1) + " -x 9999 -T --opfile result.txt " + file).split())
 
-        with open("result.txt", "r") as file:
+        with open(RESULT_FILE, "r") as file:
             for line in file:
                 if "Matched" in line:
                     file_name = text_between(line, "as transitions/", " at")
