@@ -19,6 +19,9 @@ RESULT_FILE = "result.txt"
 NUM_CPU_CORES = 4
 DEBUG_MODE = False
 
+# The episode is split into pieces and processed individually to reduce memory usages
+PART_LENGTH_SECONDS = 1200
+
 # To add a new segment, copy the transition music to the /transitions folder
 # Add the filename and title to the dict below
 FILE_NAMES_TO_NAME = {
@@ -73,12 +76,13 @@ def download_newest_episode(url=None):
 
 
 def split_episode_into_chunks():
+    print("Splitting episode into parts")
     try:
         os.mkdir("parts")
     except FileExistsError:
         pass
 
-    process = subprocess.Popen("ffmpeg -i episode.mp3 -f segment -segment_time 1800 -c copy parts/out%03d.mp3", shell=True, stdout=subprocess.PIPE)
+    process = subprocess.Popen("ffmpeg -i episode.mp3 -f segment -segment_time {} -c copy parts/out%03d.mp3".format(PART_LENGTH_SECONDS), shell=True, stdout=subprocess.PIPE)
     process.wait()
 
     parts = []
@@ -105,14 +109,13 @@ def generate_timestamps(url=None):
     if not os.path.exists(PODCAST_FILE_NAME):
         download_newest_episode(url)
 
-    print("\nGenerating data... This will take approximately 3 minutes")
-
     #audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 10 --density 20  --min-count 5 --hashbits 30 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + PODCAST_FILE_NAME).split())
 
     keyframes = {}
     parts = split_episode_into_chunks()
 
     print("DONE SPLITTING")
+    print("\nGenerating data... This will take approximately 3 minutes")
 
     part_num = 0
     for file in parts:
@@ -133,7 +136,7 @@ def generate_timestamps(url=None):
                     file_name = text_between(line, "as transitions/", " at")
                     seconds_str = text_between(line, " at ", " s with")
                     seconds_str = seconds_str.replace("-", "").strip()
-                    seconds = float(seconds_str) + part_num * 1800
+                    seconds = float(seconds_str) + part_num * PART_LENGTH_SECONDS
 
                     num_found = text_between(line, "with ", "of ")
                     out_of = text_between(line, "of ", "common ")
