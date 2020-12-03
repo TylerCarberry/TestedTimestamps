@@ -1,11 +1,14 @@
 import json
 
 import feedparser
+import opencensus
 from flask import Flask
 from flask import render_template
 from flask import request
 import main
 import os
+
+import utils
 import youtube_api
 
 app = Flask(__name__)
@@ -13,18 +16,21 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    feed = feedparser.parse(main.RSS_FEED)
+    with utils.get_tracer().span(name='home'):
+        with utils.get_tracer().span(name='Parse RSS feed'):
+            feed = feedparser.parse(main.RSS_FEED)
 
-    your_list = []
-    for i in range(0, min(100, len(feed.entries))):
-        your_list.append({"name": feed.entries[i].title, "url": feed.entries[i].enclosures[0].href})
+        your_list = []
+        for i in range(0, min(100, len(feed.entries))):
+            your_list.append({"name": feed.entries[i].title, "url": feed.entries[i].enclosures[0].href})
 
-    return render_template("index.html", your_list=your_list)
+        return render_template("index.html", your_list=your_list)
 
 
 @app.route('/run')
 def run_youtube():
-    return youtube_api.youtube_main(force=request.args.get("force"))
+    with utils.get_tracer().span(name='run_youtube'):
+        return youtube_api.youtube_main(force=request.args.get("force"))
 
 
 @app.route('/fromurl', methods=['GET', 'POST'])

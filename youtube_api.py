@@ -5,6 +5,8 @@ import main
 import re
 import os
 
+import utils
+
 RSS_FEED = "http://www.tested.com/podcast-xml/this-is-only-a-test/"
 TESTED_YOUTUBE_ID = "UCiDJtJKMICpb9B1qf7qjEOA"
 
@@ -123,9 +125,12 @@ def youtube_main(force=False):
     """
     :param force: If true post on the episode regardless of the episode number matching or if already commented
     """
-    video_id, video_name = get_newest_podcast_video_id_and_name()
-    print(video_id, video_name)
-    already_commented = have_i_already_commented(video_id)
+
+    with utils.get_tracer().span(name='get_newest_podcast_video_id_and_name'):
+        video_id, video_name = get_newest_podcast_video_id_and_name()
+        print(video_id, video_name)
+    with utils.get_tracer().span(name='have_i_already_commented'):
+        already_commented = have_i_already_commented(video_id)
 
     if (not force) and already_commented:
         return "Already commented on video " + video_name
@@ -134,12 +139,14 @@ def youtube_main(force=False):
     if (not force) and newest_rss not in video_name:
         return "The newest podcast in the RSS feed does not correspond to the youtube channel. " + newest_rss + " " + video_name
 
-    segments = main.generate_timestamps()
+    with utils.get_tracer().span(name='generate_timestamps'):
+        segments = main.generate_timestamps()
     to_post = ""
     for segment in segments:
         to_post += main.FILE_NAMES_TO_NAME[segment[0]] + " " + main.format_seconds(segment[1])
         to_post += "\n"
-    comment_on_video(video_id, to_post)
+    with utils.get_tracer().span(name='comment_on_video'):
+        comment_on_video(video_id, to_post)
     return "Posted on " + video_name + "\n\n" + to_post
 
 

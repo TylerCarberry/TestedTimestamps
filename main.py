@@ -1,4 +1,5 @@
 # https://github.com/dpwe/audfprint
+import utils
 from audfprint import audfprint
 
 import os
@@ -20,7 +21,7 @@ NUM_CPU_CORES = 4
 DEBUG_MODE = False
 
 # The episode is split into pieces and processed individually to reduce memory usages
-PART_LENGTH_SECONDS = 1200
+PART_LENGTH_SECONDS = 20 * 60
 
 # To add a new segment, copy the transition music to the /transitions folder
 # Add the filename and title to the dict below
@@ -107,12 +108,15 @@ def generate_timestamps(url=None):
         training.train()
 
     if not os.path.exists(PODCAST_FILE_NAME):
-        download_newest_episode(url)
+        with utils.get_tracer().span(name='download_newest_episode'):
+            download_newest_episode(url)
 
     #audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 10 --density 20  --min-count 5 --hashbits 30 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + PODCAST_FILE_NAME).split())
 
     keyframes = {}
-    parts = split_episode_into_chunks()
+
+    with utils.get_tracer().span(name='split_episode_into_chunks'):
+        parts = split_episode_into_chunks()
 
     print("DONE SPLITTING")
     print("\nGenerating data... This will take approximately 3 minutes")
