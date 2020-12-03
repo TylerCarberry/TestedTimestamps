@@ -12,13 +12,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.6.9
-
-    - name: Cache dependencies
-      uses: actions/cache@v1
-      with:
-        path: /opt/hostedtoolcache/Python/3.6.9/x64/lib/python3.6/site-packages
-        key: dependency-cache
+        python-version: 3.6
 
     - name: Install dependencies
       run: |
@@ -42,14 +36,8 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.6.9
-
-    - name: Cache dependencies
-      uses: actions/cache@v1
-      with:
-        path: /opt/hostedtoolcache/Python/3.6.9/x64/lib/python3.6/site-packages
-        key: dependency-cache
-
+        python-version: 3.6
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
