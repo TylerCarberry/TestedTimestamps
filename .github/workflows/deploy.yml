@@ -27,12 +27,14 @@ jobs:
       run: |
         gcloud config set project testedtimestamp
         gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
-        echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > $GOOGLE_APPLICATION_CREDENTIALS
+        echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > gcloud.json
         gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
 
     - name: Run tests
       run: |
         python test.py
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: gcloud.json
 
 
   deploy:
