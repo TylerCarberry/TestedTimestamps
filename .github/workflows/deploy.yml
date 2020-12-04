@@ -32,7 +32,9 @@ jobs:
 
     - name: Run tests
       run: |
-        GOOGLE_APPLICATION_CREDENTIALS=gcloud.json && python test.py
+        python test.py
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: gcloud.json
 
 
   deploy:
