@@ -24,12 +24,12 @@ jobs:
         sudo apt-get install google-cloud-sdk
 
     - name: Authenticate gcloud service account
-        run: |
-          gcloud config set project testedtimestamp
-          gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
-          echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > gcloud.json
-          export GOOGLE_APPLICATION_CREDENTIALS=gcloud.json
-          gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
+      run: |
+        gcloud config set project testedtimestamp
+        gcloud config set account timestamp-deploy-github@testedtimestamp.iam.gserviceaccount.com
+        echo ${{ secrets.GCLOUD_AUTH_BASE64 }} | base64 --decode > gcloud.json
+        export GOOGLE_APPLICATION_CREDENTIALS=gcloud.json
+        gcloud auth activate-service-account --key-file=gcloud.json --project=testedtimestamp
 
     - name: Run tests
       run: |
