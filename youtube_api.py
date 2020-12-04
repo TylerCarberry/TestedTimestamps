@@ -142,6 +142,9 @@ def youtube_main(force=False):
     with utils.get_tracer().span(name='generate_timestamps'):
         segments = main.generate_timestamps()
     to_post = ""
+    if segments is None:
+        print("No segments found")
+        return
     for segment in segments:
         to_post += main.FILE_NAMES_TO_NAME[segment[0]] + " " + main.format_seconds(segment[1])
         to_post += "\n"
