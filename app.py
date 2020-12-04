@@ -5,6 +5,7 @@ import opencensus
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import escape
 import main
 import os
 
@@ -42,13 +43,13 @@ def fromurl():
         os.remove("episode.mp3")
 
     if url in main.get_cache():
-        return "<pre>" + name + "\n\n" + main.get_cache().get(url) + "</pre>"
+        return "<pre>" + escape(name) + "\n\n" + main.get_cache().get(url) + "</pre>"
 
     output = main.generate_timestamps(url)
     res = ""
     for item in output:
         res += main.FILE_NAMES_TO_NAME[item[0]] + " " + main.format_seconds(item[1]) + "\n"
-    return "<pre>" + name + "\n\n" + res + "</pre>"
+    return "<pre>" + escape(name) + "\n\n" + res + "</pre>"
 
 
 def generate_cached_data():
@@ -74,4 +75,4 @@ def generate_cached_data():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
