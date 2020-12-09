@@ -5,6 +5,7 @@ ENV PYTHONIOENCODING UTF-8
 WORKDIR $APP_HOME
 COPY . .
 
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
