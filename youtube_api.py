@@ -1,3 +1,5 @@
+import logs
+
 import feedparser
 import requests
 import json
@@ -150,6 +152,8 @@ def youtube_main(force=False):
         to_post += "\n"
     with utils.get_tracer().span(name='comment_on_video'):
         comment_on_video(video_id, to_post)
+    with utils.get_tracer().span(name='log_to_discord'):
+        logs.post_to_discord(video_name + " " + "https://www.youtube.com/watch?v=" + video_id, to_post)
     return "Posted on " + video_name + "\n\n" + to_post
 
 

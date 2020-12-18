@@ -12,3 +12,5 @@ grpcio==1.34.0
 opencensus-ext-stackdriver==0.7.4
 opencensus==0.7.11
 google-cloud-trace >= 0.20.0, < 1.0.0
+
+apprise==0.8.9
