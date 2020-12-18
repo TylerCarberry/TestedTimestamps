@@ -70,7 +70,7 @@ jobs:
       run: gcloud builds submit --tag gcr.io/testedtimestamp/testedtimestamp
 
     - name: Log to discord
-      run: apprise -vv -t 'Deploying new version to Google Cloud Run' 'discord://$DISCORD_WEBHOOK_ID/$DISCORD_WEBHOOK_TOKEN/'
+      run: apprise -vv -b "Deploying new version to Google Cloud Run" "discord://$DISCORD_WEBHOOK_ID/$DISCORD_WEBHOOK_TOKEN/?avatar=No"
       env:
         DISCORD_WEBHOOK_ID: ${{ secrets.DISCORD_WEBHOOK_ID }}
         DISCORD_WEBHOOK_TOKEN: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
