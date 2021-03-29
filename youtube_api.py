@@ -148,7 +148,7 @@ def youtube_main(force=False):
         print("No segments found")
         return
     for segment in segments:
-        to_post += main.FILE_NAMES_TO_NAME[segment[0]] + " " + main.format_seconds(segment[1])
+        to_post += main.format_seconds(segment[1]) + " " + main.FILE_NAMES_TO_NAME[segment[0]]
         to_post += "\n"
     with utils.get_tracer().span(name='comment_on_video'):
         comment_on_video(video_id, to_post)
