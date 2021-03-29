@@ -143,13 +143,15 @@ def youtube_main(force=False):
 
     with utils.get_tracer().span(name='generate_timestamps'):
         segments = main.generate_timestamps()
-    to_post = ""
+    to_post = "Intro 0:00\n"
     if segments is None:
         print("No segments found")
         return
     for segment in segments:
-        to_post += main.format_seconds(segment[1]) + " " + main.FILE_NAMES_TO_NAME[segment[0]]
-        to_post += "\n"
+        segment_name = main.FILE_NAMES_TO_NAME[segment[0]]
+        if segment_name != "Intro":
+            to_post += main.format_seconds(segment[1]) + " " + segment_name
+            to_post += "\n"
     with utils.get_tracer().span(name='comment_on_video'):
         comment_on_video(video_id, to_post)
     with utils.get_tracer().span(name='log_to_discord'):
