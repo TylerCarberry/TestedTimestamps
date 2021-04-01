@@ -143,7 +143,7 @@ def youtube_main(force=False):
 
     with utils.get_tracer().span(name='generate_timestamps'):
         segments = main.generate_timestamps()
-    to_post = "Intro 0:00\n"
+    to_post = "0:00 Intro\n"
     if segments is None:
         print("No segments found")
         return
