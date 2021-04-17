@@ -1,4 +1,4 @@
-FROM valian/docker-python-opencv-ffmpeg:py3
+FROM borda/docker_python-opencv-ffmpeg:cpu-py3.9-cv4.5.1
 
 ENV APP_HOME /app
 ENV PYTHONIOENCODING UTF-8
