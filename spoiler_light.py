@@ -60,7 +60,11 @@ def download_video(video_id):
 
 
 def extract_images():
-    shutil.rmtree(FRAMES_FOLDER_NAME)
+    try:
+        shutil.rmtree(FRAMES_FOLDER_NAME)
+    except:
+        # Folder doesn't exist
+        pass
     utils.make_folder(FRAMES_FOLDER_NAME)
     os.popen("ffmpeg -i video.mkv -vf fps=1/15 {}/%d.jpg".format(FRAMES_FOLDER_NAME)).read()
 
