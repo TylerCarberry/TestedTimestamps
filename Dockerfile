@@ -16,5 +16,5 @@ RUN apt-get -y update && apt-get -y install ffmpeg
 # For environments with multiple CPU cores, increase the number of workers
 # to be equal to the cores available.
 
-# https://stackoverflow.com/a/62002251
-ENTRYPOINT ./startup.sh
+# https://stackoverflow.com/a/64084917
+CMD ["/usr/bin/python3", "run_gunicorn.py", "--workers", "1", "--threads", "4", "app:app"]

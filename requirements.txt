@@ -18,3 +18,4 @@ opencensus==0.7.12
 google-cloud-trace >= 0.20.0, < 1.0.0
 
 apprise==0.9.1
+gunicorn==20.1.0
