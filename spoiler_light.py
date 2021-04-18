@@ -19,6 +19,8 @@ def get_start_and_end_spoiler(video_id):
     extract_images()
 
     files = os.listdir(FRAMES_FOLDER_NAME)
+    print(files)
+
     num_images = len(files) - 2  # Ignore . and .. files
 
     print("num_images", num_images)
@@ -31,6 +33,7 @@ def get_start_and_end_spoiler(video_id):
     # Frames are generated for every 15 seconds. Loop through 8 at a time (every 2 minutes)
     for i in range(1, num_images, 8):
         if does_image_contain_spoiler_light(reader, i):
+            print("***")
             if start is None:
                 start = i
             end = i
@@ -59,17 +62,21 @@ def get_start_and_end_spoiler(video_id):
 
 
 def download_video(video_id):
+    print("Downloading video video_id=", video_id)
     utils.delete_file_if_exists("video.mkv")
     video_url = "https://www.youtube.com/watch?v=" + video_id
+    print("Downloading video video_url=", video_url)
     os.popen("youtube-dl -f 'bestvideo[height<=360]+bestaudio/best[height<=360]' -o 'video' '{}'".format(video_url)).read()
 
 
 def extract_images():
+    print("Extracting images")
     try:
         shutil.rmtree(FRAMES_FOLDER_NAME)
     except:
         # Folder doesn't exist
         pass
+    print("Making frames folder")
     utils.make_folder(FRAMES_FOLDER_NAME)
     os.popen("ffmpeg -i video.mkv -vf fps=1/15 {}/%d.jpg".format(FRAMES_FOLDER_NAME)).read()
 

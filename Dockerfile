@@ -2,6 +2,10 @@ FROM borda/docker_python-opencv-ffmpeg:cpu-py3.9-cv4.5.1
 
 ENV APP_HOME /app
 ENV PYTHONIOENCODING UTF-8
+
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
+
 WORKDIR $APP_HOME
 COPY . .
 
