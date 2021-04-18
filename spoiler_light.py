@@ -7,7 +7,7 @@ import utils
 
 VIDEO_FILE_NAME = "video"
 FRAMES_FOLDER_NAME = "frames"
-SECONDS_PER_FRAME = 15
+SECONDS_PER_FRAME = 10
 VIDEO_RESOLUTION = 360
 
 
@@ -28,10 +28,10 @@ def get_start_and_end_spoiler_seconds(video_id):
 
     reader = easyocr.Reader(['en'])  # need to run only once to load model into memory
 
-    # Frames are generated for every 15 seconds. Loop through 8 at a time (every 2 minutes)
-    for i in range(1, num_images, 8):
+    # Frames are generated for every 10 seconds. Loop through 12 at a time (every 2 minutes)
+    initial_precision = int(2 * 60 / SECONDS_PER_FRAME)
+    for i in range(1, num_images, initial_precision):
         if does_image_contain_spoiler_light(reader, i):
-            print("***")
             if start is None:
                 start = i
             end = i
@@ -43,20 +43,18 @@ def get_start_and_end_spoiler_seconds(video_id):
         return None, None
 
     # We have a rough estimate for the times
-    BUFFER = 16
-    for i in range(max(0, start-BUFFER), start):
+    num_buffer_frames = int(initial_precision * 1.5)
+    for i in range(max(0, start-num_buffer_frames), start):
         if does_image_contain_spoiler_light(reader, i):
-            print("****")
             start = i
             break
 
-    for i in range(min(end+BUFFER, num_images), end, -1):
+    for i in range(min(end+num_buffer_frames, num_images), end, -1):
         if does_image_contain_spoiler_light(reader, i):
-            print("****")
             end = i
             break
 
-    return start * SECONDS_PER_FRAME - SECONDS_PER_FRAME, end * SECONDS_PER_FRAME
+    return start * SECONDS_PER_FRAME - SECONDS_PER_FRAME - 5, end * SECONDS_PER_FRAME
 
 
 def download_youtube_video(video_id):
@@ -86,5 +84,8 @@ def does_image_contain_spoiler_light(reader, image_index):
     for text_block in res:
         if len(text_block) > 1:
             text += text_block[1] + " "
-    return "spoil" in text.lower()
+    contains_spoiler_light = "spoil" in text.lower()
+    if contains_spoiler_light:
+        print("Found spoiler light at image_index", image_index)
+    return contains_spoiler_light
 
