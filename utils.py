@@ -1,3 +1,4 @@
+import os
 from opencensus.ext.stackdriver import trace_exporter as stackdriver_exporter
 from opencensus.trace import tracer as tracer_module
 from opencensus.trace.samplers import AlwaysOnSampler
@@ -30,3 +31,13 @@ def get_tracer():
         exporter = stackdriver_exporter.StackdriverExporter(project_id='testedtimestamp')
         TRACER = tracer_module.Tracer(exporter=exporter, sampler=AlwaysOnSampler())
     return TRACER
+
+
+def delete_file_if_exists(file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+
+
+def make_folder(folder_name):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)

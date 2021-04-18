@@ -1,4 +1,5 @@
 # https://github.com/dpwe/audfprint
+import spoiler_light
 import utils
 from audfprint import audfprint
 
@@ -35,7 +36,9 @@ FILE_NAMES_TO_NAME = {
     "vr_minute.mp3": "VR Minute",
     "annoy_me.mp3": "Things That Annoy Me",
     "pinball.mp3": "Pinball",
-    "outro.mp3": "Outro"
+    "outro.mp3": "Outro",
+    "start_spoiler": "Spoilers",
+    "end_spoiler": "End of spoilers"
 }
 
 
@@ -101,7 +104,7 @@ def find_url_for_episode_number(num):
     return None
 
 
-def generate_timestamps(url=None):
+def generate_timestamps(video_id=None, url=None):
     remove_temp_data()
 
     if not os.path.exists(training.DB_FILE):
@@ -153,6 +156,13 @@ def generate_timestamps(url=None):
     if not DEBUG_MODE:
         remove_temp_data()
     print()
+
+    start, end = spoiler_light.get_start_and_end_spoiler(video_id)
+    if start is not None:
+        keyframes["start_spoiler"] = ['start_spoiler', start * 15, 0.9]
+    if end is not None:
+        keyframes["end_spoiler"] = ['end_spoiler', end * 15, 0.9]
+
     output = sorted(keyframes.values(), key=lambda x: x[1])
     for item in output:
         # Add a couple seconds to skip to the end of the music

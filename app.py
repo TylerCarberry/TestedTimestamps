@@ -45,7 +45,7 @@ def fromurl():
     if url in main.get_cache():
         return "<pre>" + escape(name) + "\n\n" + main.get_cache().get(url) + "</pre>"
 
-    output = main.generate_timestamps(url)
+    output = main.generate_timestamps(url=url)
     res = ""
     for item in output:
         res += main.FILE_NAMES_TO_NAME[item[0]] + " " + main.format_seconds(item[1]) + "\n"
@@ -65,7 +65,7 @@ def generate_cached_data():
             os.remove("episode.mp3")
 
         url = your_list[i]['url']
-        output = main.generate_timestamps(url)
+        output = main.generate_timestamps(url=url)
         res = ""
         for item in output:
             res += main.FILE_NAMES_TO_NAME[item[0]] + " " + main.format_seconds(item[1]) + "\n"

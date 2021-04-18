@@ -142,7 +142,7 @@ def youtube_main(force=False):
         return "The newest podcast in the RSS feed does not correspond to the youtube channel. " + newest_rss + " " + video_name
 
     with utils.get_tracer().span(name='generate_timestamps'):
-        segments = main.generate_timestamps()
+        segments = main.generate_timestamps(video_id)
     to_post = "0:00 Intro\n"
     if segments is None:
         print("No segments found")
