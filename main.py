@@ -37,8 +37,8 @@ FILE_NAMES_TO_NAME = {
     "annoy_me.mp3": "Things That Annoy Me",
     "pinball.mp3": "Pinball",
     "outro.mp3": "Outro",
-    "start_spoiler": "Spoilers",
-    "end_spoiler": "End of spoilers"
+    "start_spoiler": "Spoiler Talk",
+    "end_spoiler": "End of Spoilers"
 }
 
 
@@ -159,7 +159,7 @@ def generate_timestamps(video_id=None, url=None):
 
     start, end = spoiler_light.get_start_and_end_spoiler(video_id)
     if start is not None:
-        keyframes["start_spoiler"] = ['start_spoiler', start * 15, 0.9]
+        keyframes["start_spoiler"] = ['start_spoiler', start * 15 - 15, 0.9]
     if end is not None:
         keyframes["end_spoiler"] = ['end_spoiler', end * 15, 0.9]
 
