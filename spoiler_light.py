@@ -21,6 +21,8 @@ def get_start_and_end_spoiler(video_id):
     files = os.listdir(FRAMES_FOLDER_NAME)
     num_images = len(files) - 2  # Ignore . and .. files
 
+    print("num_images", num_images)
+
     start = None
     end = None
 
@@ -35,6 +37,9 @@ def get_start_and_end_spoiler(video_id):
 
 
     print("Rough estimate", start, end)
+
+    if start is None or end is None:
+        return None, None
 
     # We have a rough estimate for the times
     BUFFER = 16
