@@ -32,12 +32,12 @@ Generate timestamps for This Is Only A Test<br>
 <h2>Recently published episodes</h2>
 <p>Tip: If you control-click the generate button you can process multiple episodes at the same time</p>
 
-{% for your_list_element in your_list %}
+{% for episode in episodes %}
 
     <form action="/fromurl" method="post">
-        {{ your_list_element['name'] }}
-        <input id="url" type="hidden" name="url" value="{{ your_list_element['url'] }}"/>
-        <input id="name" type="hidden" name="name" value="{{ your_list_element['name'] }}"/>
+        {{ episode['name'] }}
+        <input id="url" type="hidden" name="url" value="{{ episode['url'] }}"/>
+        <input id="name" type="hidden" name="name" value="{{ episode['name'] }}"/>
         <input type="submit" value="Generate"/>
     </form>
 

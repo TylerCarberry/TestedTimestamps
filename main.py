@@ -1,6 +1,4 @@
 # https://github.com/dpwe/audfprint
-import spoiler_light
-import utils
 from audfprint import audfprint
 
 import os
@@ -10,6 +8,9 @@ import feedparser
 import shutil
 
 import training
+import spoiler_light
+import utils
+
 from utils import text_between
 from utils import format_seconds
 
@@ -63,8 +64,7 @@ def remove_temp_data():
             os.remove(f)
 
 
-# Download the newest episode of the podcast
-def download_newest_episode(url=None):
+def download_newest_rss_episode(url=None):
     if url is None:
         feed = feedparser.parse(RSS_FEED)
         download_url = feed.entries[0].enclosures[0].href
@@ -86,7 +86,7 @@ def split_episode_into_chunks():
     except FileExistsError:
         pass
 
-    process = subprocess.Popen("ffmpeg -i episode.mp3 -f segment -segment_time {} -c copy parts/out%03d.mp3".format(PART_LENGTH_SECONDS), shell=True, stdout=subprocess.PIPE)
+    process = subprocess.Popen("ffmpeg -i {} -f segment -segment_time {} -c copy parts/out%03d.mp3".format(PODCAST_FILE_NAME, PART_LENGTH_SECONDS), shell=True, stdout=subprocess.PIPE)
     process.wait()
 
     parts = []
@@ -112,7 +112,7 @@ def generate_timestamps(video_id=None, url=None):
 
     if not os.path.exists(PODCAST_FILE_NAME):
         with utils.get_tracer().span(name='download_newest_episode'):
-            download_newest_episode(url)
+            download_newest_rss_episode(url)
 
     #audfprint.main(("audfprint match --dbase " + training.DB_FILE + " --match-win 10 --density 20  --min-count 5 --hashbits 30 --shifts 4 --ncores " + str(NUM_CPU_CORES) + " -x 9999 -T --opfile result.txt " + PODCAST_FILE_NAME).split())
 
@@ -157,11 +157,11 @@ def generate_timestamps(video_id=None, url=None):
         remove_temp_data()
     print()
 
-    start, end = spoiler_light.get_start_and_end_spoiler(video_id)
+    start, end = spoiler_light.get_start_and_end_spoiler_seconds(video_id)
     if start is not None:
-        keyframes["start_spoiler"] = ['start_spoiler', start * 15 - 15, 0.9]
+        keyframes["start_spoiler"] = ['start_spoiler', start, 0.9]
     if end is not None:
-        keyframes["end_spoiler"] = ['end_spoiler', end * 15, 0.9]
+        keyframes["end_spoiler"] = ['end_spoiler', end, 0.9]
 
     output = sorted(keyframes.values(), key=lambda x: x[1])
     for item in output:
@@ -182,7 +182,3 @@ def generate_timestamps(video_id=None, url=None):
 def get_cache():
     return {}
     #return {"https://media.blubrry.com/thisisonlyatest/d2rormqr1qwzpz.cloudfront.net/podcast/thisisonlyatest_20190516.mp3": "Technology News 22:41\nIntro 30:25\nTop Story 39:19\nPop Culture News 55:12\nMoment of Science 1:34:34\nVR Minute 1:46:53\nThings That Annoy Me 2:06:03\nOutro 2:14:34\n", "https://media.blubrry.com/thisisonlyatest/d2rormqr1qwzpz.cloudfront.net/podcast/thisisonlyatest_20190509.mp3": "Pop Culture News 3:47\nTechnology News 14:43\nIntro 30:48\nTop Story 47:20\nVR Minute 1:10:32\nIntro 1:33:26\nOutro 1:33:42\n"}
-
-
-if __name__ == "__main__":
-    generate_timestamps()

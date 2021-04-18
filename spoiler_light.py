@@ -5,24 +5,22 @@ import time
 import utils
 
 
-# 6 minutes 40 sec for 480p
-# 4 minutes 30 for 360p
-
-
+VIDEO_FILE_NAME = "video"
 FRAMES_FOLDER_NAME = "frames"
+SECONDS_PER_FRAME = 15
+VIDEO_RESOLUTION = 360
 
 
-def get_start_and_end_spoiler(video_id):
+def get_start_and_end_spoiler_seconds(video_id):
     if video_id is None:
         return None, None
-    download_video(video_id)
+    download_youtube_video(video_id)
     extract_images()
 
     files = os.listdir(FRAMES_FOLDER_NAME)
-    print(files)
-
     num_images = len(files) - 2  # Ignore . and .. files
 
+    print(files)
     print("num_images", num_images)
 
     start = None
@@ -58,15 +56,15 @@ def get_start_and_end_spoiler(video_id):
             end = i
             break
 
-    return start, end
+    return start * SECONDS_PER_FRAME - SECONDS_PER_FRAME, end * SECONDS_PER_FRAME
 
 
-def download_video(video_id):
+def download_youtube_video(video_id):
     print("Downloading video video_id=", video_id)
     utils.delete_file_if_exists("video.mkv")
     video_url = "https://www.youtube.com/watch?v=" + video_id
     print("Downloading video video_url=", video_url)
-    os.popen("youtube-dl -f 'bestvideo[height<=360]+bestaudio/best[height<=360]' -o 'video' '{}'".format(video_url)).read()
+    os.popen("youtube-dl -f 'bestvideo[height<={}]+bestaudio/best[height<={}]' -o '{}' '{}'".format(VIDEO_RESOLUTION, VIDEO_RESOLUTION, VIDEO_FILE_NAME, video_url)).read()
 
 
 def extract_images():
@@ -76,9 +74,8 @@ def extract_images():
     except:
         # Folder doesn't exist
         pass
-    print("Making frames folder")
     utils.make_folder(FRAMES_FOLDER_NAME)
-    os.popen("ffmpeg -i video.mkv -vf fps=1/15 {}/%d.jpg".format(FRAMES_FOLDER_NAME)).read()
+    os.popen("ffmpeg -i {}.mkv -vf fps=1/{} {}/%d.jpg".format(VIDEO_FILE_NAME, SECONDS_PER_FRAME, FRAMES_FOLDER_NAME)).read()
 
 
 def does_image_contain_spoiler_light(reader, image_index):
