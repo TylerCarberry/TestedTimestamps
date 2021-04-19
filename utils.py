@@ -41,3 +41,16 @@ def delete_file_if_exists(file_name):
 def make_folder(folder_name):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
+
+
+# https://stackoverflow.com/a/8665506
+def longest_consecutive_sublist(the_list):
+    the_list = sorted(the_list)
+    maxend = the_list[0]
+    maxrun = -1
+    rl = {}
+    for x in the_list:
+        run = rl[x] = rl.get(x - 1, 0) + 1
+        if run > maxrun:
+            maxend, maxrun = x, run
+    return maxend - maxrun + 1, maxend + 1
