@@ -152,6 +152,8 @@ def youtube_main(force=False):
         if segment_name != "Intro":
             to_post += main.format_seconds(segment[1]) + " " + segment_name
             to_post += "\n"
+    if "spoiler" in to_post.lower():
+        to_post = "NEW: Spoiler alerts are now included in the timestamps! @Tested can also copy this comment into the YouTube description to embed chapters in the video.\n" + to_post
     with utils.get_tracer().span(name='comment_on_video'):
         comment_on_video(video_id, to_post)
     with utils.get_tracer().span(name='log_to_discord'):
