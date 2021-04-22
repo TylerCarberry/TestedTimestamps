@@ -80,7 +80,8 @@ def get_start_and_end_spoiler_seconds(video_id):
 
 def download_youtube_video(video_id):
     print("Downloading video video_id=", video_id)
-    utils.delete_file_if_exists("video.mkv")
+    utils.delete_file_if_exists(VIDEO_FILE_NAME + ".mkv")
+    utils.delete_file_if_exists(VIDEO_FILE_NAME + ".mp4")
     video_url = "https://www.youtube.com/watch?v=" + video_id
     print("Downloading video video_url=", video_url)
     os.popen("youtube-dl -f 'bestvideo[height<={}]+bestaudio/best[height<={}]' -o '{}' '{}'".format(VIDEO_RESOLUTION, VIDEO_RESOLUTION, VIDEO_FILE_NAME, video_url)).read()
@@ -94,7 +95,9 @@ def extract_images():
         # Folder doesn't exist
         pass
     utils.make_folder(FRAMES_FOLDER_NAME)
-    os.popen("ffmpeg -i {}.mkv -vf fps=1/{} {}/%d.jpg".format(VIDEO_FILE_NAME, SECONDS_PER_FRAME, FRAMES_FOLDER_NAME)).read()
+
+    file_extension = ".mkv" if os.path.exists(VIDEO_FILE_NAME + ".mkv") else ".mp4"
+    os.popen("ffmpeg -i {}{} -vf fps=1/{} {}/%d.jpg".format(VIDEO_FILE_NAME, file_extension, SECONDS_PER_FRAME, FRAMES_FOLDER_NAME)).read()
 
 
 def does_image_contain_spoiler_light(reader, image_index):
