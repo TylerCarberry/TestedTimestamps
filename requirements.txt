@@ -17,7 +17,7 @@ opencensus-ext-stackdriver==0.7.4
 opencensus==0.7.12
 google-cloud-trace >= 0.20.0, < 1.0.0
 
-apprise==0.9.1
+apprise==0.9.5.1
 
 Pillow==9.0.0
 matplotlib==3.4.1
